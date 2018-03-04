@@ -42,5 +42,23 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      */
 
     /* HELLLO FROM THE OTHER SIDE */
+
+    // true if game is finished, automatically exits
+    //  not sure if this is necessary 
+    if(board.isDone())
+    {
+        exit(0);
+    }
+
+    // update board based on opponent move
+    // opponentsMove param in this function, side declared in constructor
+    board.doMove(opponentsMove, side);
+
+    // if there are no valid moves, return nullptr
+    if(!board.hasMove(side))
+    {
+        return nullptr;
+    }
+
     return nullptr;
 }
