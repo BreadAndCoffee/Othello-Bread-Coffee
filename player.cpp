@@ -46,9 +46,19 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
         exit(0);
     }
 
+    Side oppo_side;
+    if(side == BLACK)
+    {
+        oppo_side = WHITE;
+    }
+    else
+    {
+        oppo_side = BLACK;
+    }
+
     // update board based on opponent move
     // opponentsMove param in this function, side declared in constructor
-    board->doMove(opponentsMove, side);
+    board->doMove(opponentsMove, oppo_side);
 
     // if there are no valid moves, return nullptr
     if(!board->hasMoves(side))
@@ -74,6 +84,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     }
 
     Move *final_move = possible_moves[0];
+    board->doMove(final_move, side);
     // return the first element (essentially random)
     return final_move; 
 }
