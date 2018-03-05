@@ -46,11 +46,11 @@ int Player::get_score(Move* move){
     // delete the copy of the board 
     // return the score  
 
-    Board *copy = board.copy(); 
+    Board *copy = board->copy(); 
     int old_score = copy->count(side);
-    int x = move->getX; 
-    int y = move->getY; 
-    copy->set(side, x, y); 
+    int x = move->getX(); 
+    int y = move->getY(); 
+    copy->doMove(move, side); 
     int new_score = copy->count(side);
     delete copy;  
 
