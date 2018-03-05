@@ -1,5 +1,9 @@
 #include "player.hpp"
 #include <vector>
+
+#define CORNERS 5
+#define EDGES 2
+
 /*
  * Constructor for the player; initialize everything here. The side your AI is
  * on (BLACK or WHITE) is passed in as "side". The constructor must finish
@@ -33,12 +37,50 @@ Player::~Player() {
  * 
  */
 int Player::get_score(Move* move){
-    //Make copy of the board 
-    //Get the original score
-    //Make a move on that copy
-    //Get the new score 
-    //Delete the copy 
-    //Return the score  
+
+    // Outline:
+    // make copy of the board 
+    // get the original score
+    // make a move on that copy
+    // get the new score 
+    // delete the copy of the board 
+    // return the score  
+
+    Board *copy = board.copy(); 
+    int old_score = copy->count(side);
+    int x = move->getX; 
+    int y = move->getY; 
+    copy->set(side, x, y); 
+    int new_score = copy->count(side);
+    delete copy;  
+
+    // Check corners 
+    if((x == 0 || x == 7) && ((y == 0) || y == 7))
+    {
+        new_score += CORNERS; 
+    }
+
+    // Check adjacent 
+    else if((x == 1 || x == 6) && (y == 6 || y ==1))
+    {
+        new_score -= CORNERS; 
+    }
+
+    // Check neighbors
+    else if((x == 0 && y == 1) || (x == 0 && y == 6) 
+        || (x == 1 && y == 0) || (x == 1 && y == 7)
+        || (x == 6 && y == 0) || (x == 6 && y == 7)
+        || (x == 7 && y == 1) || (x == 7 && y == 6))
+    {
+        new_score -= EDGES; 
+    }
+
+    // Check the edges (excluding near corner)
+    else if (x == 0 || x == 7 || y == 0 || y == 7)
+    {
+        new_score += EDGES; 
+    } 
+    return (new_score - old_score); 
 }
 
 /*
