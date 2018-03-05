@@ -25,6 +25,38 @@ Player::~Player() {
 }
 
 /*
+ * @brief returns the score of a given move 
+ * 
+ * @param the move to find the score for 
+ * 
+ * @return the score of that move
+ * 
+ */
+int Player::get_score(Move* move){
+    //Make copy of the board 
+    //Get the original score
+    //Make a move on that copy
+    //Get the new score 
+    //Delete the copy 
+    //Return the score  
+}
+
+/*
+ * @brief returns the index of the best move from the input vector 
+ * possuble_moves
+ *
+ * @param the list of possible moves from which to find the best move
+ *
+ * @return an integer corresponding to the index of the best move
+ * 
+ */
+int Player::bestMove(vector<Move*> possible_moves){
+    //Calls get_score for every move in possible_moves
+    //Finds the highest
+    //Return the index of the highest value 
+}
+
+/*
  * Compute the next move given the opponent's last move. Your AI is
  * expected to keep track of the board on its own. If this is the first move,
  * or if the opponent passed on the last move, then opponentsMove will be
@@ -46,6 +78,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
         exit(0);
     }
 
+    // finding oponent's side 
     Side oppo_side;
     if(side == BLACK)
     {
