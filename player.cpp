@@ -1,6 +1,4 @@
 #include "player.hpp"
-
-
 /*
  * Constructor for the player; initialize everything here. The side your AI is
  * on (BLACK or WHITE) is passed in as "side". The constructor must finish
@@ -37,10 +35,8 @@ Player::~Player() {
  */
 Move *Player::doMove(Move *opponentsMove, int msLeft) {
 
-    /* HELLLO FROM THE OTHER SIDE */
-
     // true if game is finished, automatically exits
-    //  not sure if this is necessary 
+    // not sure if this is necessary 
     if(board.isDone())
     {
         exit(0);
@@ -56,5 +52,23 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
         return nullptr;
     }
 
-    return nullptr;
+    // initialize a vector to store all possible moves 
+    std::vector<*Move> possible_moves;  
+
+    // iterate through positions to check if the move is valid
+    for(int i = 0; i < 8; i++)
+    {
+        for(int j = 0; j < 8; j++)
+        {
+            Move *move = &Moves(i, j); 
+            // if the move is valid, add it to possible_moves
+            if(board.checkMove(move, side))
+            {
+                possible_moves.push_back(move); 
+            }
+        }
+    }
+
+    // return the first element (essentially random)
+    return possible_moves[0]; 
 }
