@@ -1,20 +1,24 @@
 #include "player.hpp"
 #include <vector>
 
+
 #define CORNERS 5
 #define EDGES 2
+
+using namespace std;
 
 /*
  * Constructor for the player; initialize everything here. The side your AI is
  * on (BLACK or WHITE) is passed in as "side". The constructor must finish
  * within 30 seconds.
  */
-Board *board = new Board();
-Side side;
+
 
 Player::Player(Side my_side) {
     // Will be set to true in test_minimax.cpp.
     testingMinimax = false;
+
+    board = new Board();
 
     // Record the size and initialize the player's 
     // record of the board
@@ -103,7 +107,7 @@ int Player::bestMove(vector<Move*> possible_moves){
     // initialized to score of possible_moves[0]
     int high_score = get_score(possible_moves[0]);
     // iterate over rest of vector
-    for (int i = 1; i < possible_moves.size(); i++)
+    for (unsigned int i = 1; i < possible_moves.size(); i++)
     {
         // if move has higher score than current highest score
         if(get_score(possible_moves[i]) > high_score)
