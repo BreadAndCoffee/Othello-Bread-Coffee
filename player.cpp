@@ -1,23 +1,28 @@
 #include "player.hpp"
+#include <vector>
 /*
  * Constructor for the player; initialize everything here. The side your AI is
  * on (BLACK or WHITE) is passed in as "side". The constructor must finish
  * within 30 seconds.
  */
-Player::Player(Side side) {
+Board *board = new Board();
+Side side;
+
+Player::Player(Side my_side) {
     // Will be set to true in test_minimax.cpp.
     testingMinimax = false;
 
     // Record the size and initialize the player's 
     // record of the board
-    Side side = side; 
-    Board board = board; 
+    side = my_side; 
+    //Board *board = new Board(); 
 }
 
 /*
  * Destructor for the player.
  */
 Player::~Player() {
+    delete board;
 }
 
 /*
@@ -37,38 +42,39 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 
     // true if game is finished, automatically exits
     // not sure if this is necessary 
-    if(board.isDone())
+    if(board->isDone())
     {
         exit(0);
     }
 
     // update board based on opponent move
     // opponentsMove param in this function, side declared in constructor
-    board.doMove(opponentsMove, side);
+    board->doMove(opponentsMove, side);
 
     // if there are no valid moves, return nullptr
-    if(!board.hasMove(side))
+    if(!board->hasMoves(side))
     {
         return nullptr;
-    }
+    } 
 
     // initialize a vector to store all possible moves 
-    std::vector<*Move> possible_moves;  
+    vector<Move*> possible_moves;  
 
     // iterate through positions to check if the move is valid
     for(int i = 0; i < 8; i++)
     {
         for(int j = 0; j < 8; j++)
         {
-            Move *move = &Moves(i, j); 
+            Move *move = new Move(i, j); 
             // if the move is valid, add it to possible_moves
-            if(board.checkMove(move, side))
+            if(board->checkMove(move, side))
             {
                 possible_moves.push_back(move); 
             }
         }
     }
 
+    Move *final_move = possible_moves[0];
     // return the first element (essentially random)
-    return possible_moves[0]; 
+    return final_move; 
 }
