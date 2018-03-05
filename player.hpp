@@ -14,6 +14,10 @@ public:
 
     Move *doMove(Move *opponentsMove, int msLeft);
 
+    int bestMove(vector<Move*> possible_moves);
+    int get_score(Move* move);
+
+
     // Flag to tell if the player is running within the test_minimax context
     bool testingMinimax;
 };

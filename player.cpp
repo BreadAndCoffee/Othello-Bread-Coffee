@@ -43,7 +43,7 @@ int Player::get_score(Move* move){
 
 /*
  * @brief returns the index of the best move from the input vector 
- * possuble_moves
+ * possible_moves
  *
  * @param the list of possible moves from which to find the best move
  *
@@ -54,6 +54,25 @@ int Player::bestMove(vector<Move*> possible_moves){
     //Calls get_score for every move in possible_moves
     //Finds the highest
     //Return the index of the highest value 
+
+    // index of move with highest value; initialize to 0
+    int high_index = 0; 
+    // highest score of all moves in vector
+    // initialized to score of possible_moves[0]
+    int high_score = get_score(possible_moves[0]);
+    // iterate over rest of vector
+    for (int i = 1; i < possible_moves.size(); i++)
+    {
+        // if move has higher score than current highest score
+        if(get_score(possible_moves[i]) > high_score)
+        {
+            // update score
+            high_score = get_score(possible_moves[i]);
+            // update index
+            high_index = i;
+        }
+    }
+    return high_index;
 }
 
 /*
@@ -116,7 +135,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
         }
     }
 
-    Move *final_move = possible_moves[0];
+    Move *final_move = bestMove(possible_moves);
     board->doMove(final_move, side);
     // return the first element (essentially random)
     return final_move; 
