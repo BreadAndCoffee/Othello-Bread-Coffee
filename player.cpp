@@ -177,7 +177,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
         }
     }
 
-    Move *final_move = bestMove(possible_moves);
+    Move *final_move = possible_moves[bestMove(possible_moves)];
     board->doMove(final_move, side);
     // return the first element (essentially random)
     return final_move; 
