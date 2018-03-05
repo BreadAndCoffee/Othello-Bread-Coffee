@@ -11,7 +11,6 @@ Player::Player(Side side) {
     // Record the size and initialize the player's 
     // record of the board
     Side side = side; 
-    Board board = board; 
 }
 
 /*
