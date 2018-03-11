@@ -32,17 +32,22 @@ Player::~Player() {
     delete board;
 }
 
-/*
-int Player::get_mobility(Board *copy)
-{
-    if(!copy->hasMoves(side))
-    {
-        return 0;
-    } 
 
+vector<Move*> Player::get_possible_moves(Board *board, Side s)
+{
+    // true if game is finished, automatically exits
+    // not sure if this is necessary 
+    if(board->isDone())
+    {
+        exit(0);
+    }
+    // if there are no valid moves, return nullptr
+    if(!board->hasMoves(s))
+    {
+        return nullptr;
+    } 
     // initialize a vector to store all possible moves 
     vector<Move*> possible_moves;  
-
     // iterate through positions to check if the move is valid
     for(int i = 0; i < 8; i++)
     {
@@ -50,24 +55,18 @@ int Player::get_mobility(Board *copy)
         {
             Move *move = new Move(i, j); 
             // if the move is valid, add it to possible_moves
-            if(copy->checkMove(move, side))
+            if(board->checkMove(move, s))
             {
                 possible_moves.push_back(move); 
             }
             else
             {
-                delete move; 
+                delete move;
             }
         }
     }
-    int mobility = possible_moves.size(); 
-    for(unsigned int i = 0; i < possible_moves.size(); i++)
-    {
-        delete possible_moves[i]; 
-    }
-    return mobility; 
+    return possible_moves(); 
 }
-*/
 
 /*
  * @brief returns the score of a given move 
@@ -146,11 +145,12 @@ int Player::bestMove(vector<Move*> possible_moves){
     // iterate over rest of vector
     for (unsigned int i = 1; i < possible_moves.size(); i++)
     {
+        int my_score = (int)(minimax(board, possible_moves[i], DEPTH, side));
         // if move has higher score than current highest score
-        if(get_score(possible_moves[i]) > high_score)
+        if(my_score > high_score)
         {
             // update score
-            high_score = get_score(possible_moves[i]);
+            high_score = my_score; 
             // update index
             high_index = i;
         }
@@ -238,36 +238,13 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     // opponentsMove param in this function, side declared in constructor
     board->doMove(opponentsMove, oppo_side);
 
-    // if there are no valid moves, return nullptr
-    if(!board->hasMoves(side))
-    {
-        return nullptr;
-    } 
-
-    // initialize a vector to store all possible moves 
-    vector<Move*> possible_moves;  
-
-    // iterate through positions to check if the move is valid
-    for(int i = 0; i < 8; i++)
-    {
-        for(int j = 0; j < 8; j++)
-        {
-            Move *move = new Move(i, j); 
-            // if the move is valid, add it to possible_moves
-            if(board->checkMove(move, side))
-            {
-                possible_moves.push_back(move); 
-            }
-            else
-            {
-                delete move;
-            }
-        }
-    }
+    vector<Move*> possible_moves(board, side); 
 
     Move *final_move = new Move(possible_moves[bestMove(possible_moves)]->getX(), 
         possible_moves[bestMove(possible_moves)]->getY());
+
     board->doMove(final_move, side);
+
     for(unsigned int i = 0; i < possible_moves.size(); i++)
     {
         delete possible_moves[i]; 
