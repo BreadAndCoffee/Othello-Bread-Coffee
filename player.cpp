@@ -166,6 +166,7 @@ float Player::minimax(Board *board, Move *node, int depth, bool maximizing_playe
 {
     float bestValue;
     Board *copy = board->copy();
+
     Side oppo_side;
 
     if(side == BLACK)
@@ -176,20 +177,20 @@ float Player::minimax(Board *board, Move *node, int depth, bool maximizing_playe
     {
         oppo_side = BLACK;
     }
-    
+    /*
     if (maximizing_player)
     {
         copy->doMove(node, oppo_side);
     }
-
     else
     {
         copy->doMove(node, side);
     }
-    
+    */ 
 
     if (maximizing_player)
     {
+        copy->doMove(node, side);
         vector<Move*> children = get_possible_moves(copy, oppo_side);
         if (depth == 0 || children[0] == nullptr)
         {
@@ -206,6 +207,7 @@ float Player::minimax(Board *board, Move *node, int depth, bool maximizing_playe
     }
     else
     {
+        copy->doMove(node, oppo_side);
         vector<Move*> children = get_possible_moves(copy, side);
         if (depth == 0 || children[0] == nullptr)
         {

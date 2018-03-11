@@ -1,6 +1,7 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 #define DEPTH 3
+#define INFINITY 100000000
 
 #include <iostream>
 #include <vector>
@@ -15,6 +16,7 @@ public:
     vector<Move*> get_possible_moves(Board *board, Side s); 
     Move *doMove(Move *opponentsMove, int msLeft);
     Move* opp_move(Board *copy); 
+    float minimax(Board *board, Move *node, int depth, bool maximizing_player);
     int bestMove(std::vector<Move*> possible_moves);
     int get_score(Move* move);
 
