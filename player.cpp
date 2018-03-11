@@ -41,13 +41,17 @@ vector<Move*> Player::get_possible_moves(Board *board, Side s)
     {
         exit(0);
     }
+
+    // initialize a vector to store all possible moves 
+    vector<Move*> possible_moves;  
+
     // if there are no valid moves, return nullptr
     if(!board->hasMoves(s))
     {
-        return nullptr;
+        possible_moves.push_back(nullptr); 
+        return possible_moves; 
     } 
-    // initialize a vector to store all possible moves 
-    vector<Move*> possible_moves;  
+
     // iterate through positions to check if the move is valid
     for(int i = 0; i < 8; i++)
     {
@@ -65,7 +69,7 @@ vector<Move*> Player::get_possible_moves(Board *board, Side s)
             }
         }
     }
-    return possible_moves(); 
+    return possible_moves; 
 }
 
 /*
@@ -145,7 +149,7 @@ int Player::bestMove(vector<Move*> possible_moves){
     // iterate over rest of vector
     for (unsigned int i = 1; i < possible_moves.size(); i++)
     {
-        int my_score = (int)(minimax(board, possible_moves[i], DEPTH, side));
+        int my_score = (int)(minimax(board, possible_moves[i], DEPTH, true));
         // if move has higher score than current highest score
         if(my_score > high_score)
         {
@@ -158,32 +162,43 @@ int Player::bestMove(vector<Move*> possible_moves){
     return high_index;
 }
 
-float Player::minimax(Board *board, Move *node, int depth, Side curr_side)
+float Player::minimax(Board *board, Move *node, int depth, bool maximizing_player)
 {
     float bestValue;
-    Board *copy = board->copy;
-    copy->doMove(node);
-    vector<Move*> children = get_possible_moves(copy, curr_side);
-    if (depth == 0 || children == nullptr)
+    Board *copy = board->copy();
+    Side oppo_side;
+
+    if(side == BLACK)
     {
-        return get_score(node);
+        oppo_side = WHITE;
+    }
+    else
+    {
+        oppo_side = BLACK;
+    }
+    
+    if (maximizing_player)
+    {
+        copy->doMove(node, oppo_side);
     }
 
-    if (curr_side == side)
+    else
     {
+        copy->doMove(node, side);
+    }
+    
+
+    if (maximizing_player)
+    {
+        vector<Move*> children = get_possible_moves(copy, oppo_side);
+        if (depth == 0 || children[0] == nullptr)
+        {
+            return get_score(node);
+        }
         bestValue = -INFINITY;
-        Side oppo_side;
-        if(side == BLACK)
+        for (unsigned int i = 0; i < children.size(); i++)
         {
-            oppo_side = WHITE;
-        }
-        else
-        {
-            oppo_side = BLACK;
-        }
-        for (int i = 0; i < children.size(); i++)
-        {
-            int recur_result = minimax(copy, children[i], depth-1, oppo_side);
+            float recur_result = minimax(copy, children[i], depth-1, false);
             // return maximum
             bestValue = (bestValue < recur_result) ?recur_result:bestValue;
         }
@@ -191,10 +206,15 @@ float Player::minimax(Board *board, Move *node, int depth, Side curr_side)
     }
     else
     {
-        bestValue = INFINITY;
-        for (int i = 0; i < children.size(); i++)
+        vector<Move*> children = get_possible_moves(copy, side);
+        if (depth == 0 || children[0] == nullptr)
         {
-            int recur_result = minimax(copy, children[i], depth-1, curr_side);
+            return get_score(node);
+        }
+        bestValue = INFINITY;
+        for (unsigned int i = 0; i < children.size(); i++)
+        {
+            float recur_result = minimax(copy, children[i], depth-1, true);
             // return minimum
             bestValue = !(recur_result < bestValue) ?bestValue:recur_result;
         }
@@ -238,7 +258,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     // opponentsMove param in this function, side declared in constructor
     board->doMove(opponentsMove, oppo_side);
 
-    vector<Move*> possible_moves(board, side); 
+    vector<Move*> possible_moves = get_possible_moves(board, side); 
 
     Move *final_move = new Move(possible_moves[bestMove(possible_moves)]->getX(), 
         possible_moves[bestMove(possible_moves)]->getY());
