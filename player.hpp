@@ -1,5 +1,6 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
+#define DEPTH 3
 
 #include <iostream>
 #include <vector>
@@ -13,6 +14,7 @@ public:
     ~Player();
 
     Move *doMove(Move *opponentsMove, int msLeft);
+    int minimax(Move *node, depth, maximizingPlayer);
 
     int bestMove(std::vector<Move*> possible_moves);
     int get_score(Move* move);

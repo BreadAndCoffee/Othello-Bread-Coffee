@@ -121,6 +121,20 @@ int Player::bestMove(vector<Move*> possible_moves){
     return high_index;
 }
 
+int Player::minimax(Move *node, depth, maximizingPlayer)
+{
+    int bestValue;
+    if (depth == 0 || node->next == nullptr)
+    {
+        return get_score(node);
+    }
+
+    if (maximizingPlayer)
+    {
+        bestValue = -INFINITY;
+    }
+}
+
 /*
  * Compute the next move given the opponent's last move. Your AI is
  * expected to keep track of the board on its own. If this is the first move,
@@ -177,6 +191,10 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
             if(board->checkMove(move, side))
             {
                 possible_moves.push_back(move); 
+            }
+            else
+            {
+                delete move;
             }
         }
     }
