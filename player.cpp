@@ -33,6 +33,46 @@ Player::~Player() {
 }
 
 /*
+int Player::get_mobility(Board *copy)
+{
+    // if there are no valid moves, return nullptr
+    if(!copy->hasMoves(side))
+    {
+        return 0;
+    } 
+
+    // initialize a vector to store all possible moves 
+    vector<Move*> possible_moves;  
+
+    // iterate through positions to check if the move is valid
+    for(int i = 0; i < 8; i++)
+    {
+        for(int j = 0; j < 8; j++)
+        {
+            Move *move = new Move(i, j); 
+            // if the move is valid, add it to possible_moves
+            if(copy->checkMove(move, side))
+            {
+                possible_moves.push_back(move); 
+            }
+
+            else
+            {
+                delete move;
+            }
+        }
+    }
+
+    int length = possible_moves.size();
+    for(unsigned int i = 0; i < possible_moves.size(); i++)
+    {
+        delete possible_moves[i]; 
+    }
+    return length; 
+}
+*/
+
+/*
  * @brief returns the score of a given move 
  * 
  * @param the move to find the score for 
@@ -47,6 +87,7 @@ int Player::get_score(Move* move){
     // get the original score
     // make a move on that copy
     // get the new score 
+    // get the new moves 
     // delete the copy of the board 
     // return the score  
 
@@ -56,6 +97,7 @@ int Player::get_score(Move* move){
     int y = move->getY(); 
     copy->doMove(move, side); 
     int new_score = copy->count(side);
+    //int mobility = (int) (get_mobility(copy) / 4); 
     delete copy;  
 
     // Check corners 
@@ -178,11 +220,25 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
             {
                 possible_moves.push_back(move); 
             }
+            else
+            {
+                //delete move; 
+            }
         }
     }
 
-    Move *final_move = possible_moves[bestMove(possible_moves)];
+    //Move *final_move = new Move(possible_moves[bestMove(possible_moves)]->getX(), 
+        //possible_moves[bestMove(possible_moves)]->getY()); 
+    Move *final_move = possible_moves[bestMove(possible_moves)]; 
+
     board->doMove(final_move, side);
+
+    /*for(unsigned int i = 0; i < possible_moves.size(); i++)
+    {
+        delete possible_moves[i]; 
+    }
+    */
+
     // return the first element (essentially random)
     return final_move; 
 }
