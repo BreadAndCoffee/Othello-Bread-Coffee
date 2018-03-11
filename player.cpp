@@ -158,17 +158,47 @@ int Player::bestMove(vector<Move*> possible_moves){
     return high_index;
 }
 
-int Player::minimax(Move *node, depth, maximizingPlayer)
+float Player::minimax(Board *board, Move *node, int depth, Side curr_side)
 {
-    int bestValue;
-    if (depth == 0 || node->next == nullptr)
+    float bestValue;
+    Board *copy = board->copy;
+    copy->doMove(node);
+    vector<Move*> children = get_possible_moves(copy, curr_side);
+    if (depth == 0 || children == nullptr)
     {
         return get_score(node);
     }
 
-    if (maximizingPlayer)
+    if (curr_side == side)
     {
         bestValue = -INFINITY;
+        Side oppo_side;
+        if(side == BLACK)
+        {
+            oppo_side = WHITE;
+        }
+        else
+        {
+            oppo_side = BLACK;
+        }
+        for (int i = 0; i < children.size(); i++)
+        {
+            int recur_result = minimax(copy, children[i], depth-1, oppo_side);
+            // return maximum
+            bestValue = (bestValue < recur_result) ?recur_result:bestValue;
+        }
+        return bestValue;
+    }
+    else
+    {
+        bestValue = INFINITY;
+        for (int i = 0; i < children.size(); i++)
+        {
+            int recur_result = minimax(copy, children[i], depth-1, curr_side);
+            // return minimum
+            bestValue = !(recur_result < bestValue) ?bestValue:recur_result;
+        }
+        return bestValue;
     }
 }
 
