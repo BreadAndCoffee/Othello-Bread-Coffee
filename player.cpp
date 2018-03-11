@@ -47,7 +47,6 @@ int Player::get_score(Move* move){
     // get the original score
     // make a move on that copy
     // get the new score 
-    // get the new moves 
     // delete the copy of the board 
     // return the score  
 
@@ -56,7 +55,7 @@ int Player::get_score(Move* move){
     int x = move->getX(); 
     int y = move->getY(); 
     copy->doMove(move, side); 
-    int new_score = copy->count(side); 
+    int new_score = copy->count(side);
     delete copy;  
 
     // Check corners 
@@ -182,9 +181,8 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
         }
     }
 
-    Move *final_move = possible_moves[bestMove(possible_moves)]; 
+    Move *final_move = possible_moves[bestMove(possible_moves)];
     board->doMove(final_move, side);
-
     // return the first element (essentially random)
     return final_move; 
 }
