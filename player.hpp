@@ -12,11 +12,10 @@ class Player {
 public:
     Player(Side my_side);
     ~Player();
-
+    vector<Move*> get_possible_moves(Board *board, Side s); 
     Move *doMove(Move *opponentsMove, int msLeft);
     Move* opp_move(Board *copy); 
     int minimax(Move *node, depth, maximizingPlayer);
-
     int bestMove(std::vector<Move*> possible_moves);
     int get_score(Move* move);
 
