@@ -13,6 +13,8 @@ public:
     ~Player();
 
     Move *doMove(Move *opponentsMove, int msLeft);
+    Move* opp_move(Board *copy); 
+    int get_mobility(Board *copy); 
     int bestMove(std::vector<Move*> possible_moves);
     int get_score(Move* move);
 
