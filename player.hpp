@@ -3,6 +3,7 @@
 #define DEPTH 3
 #define INFINITY 100000000
 
+
 #include <iostream>
 #include <vector>
 #include "common.hpp"
@@ -13,10 +14,10 @@ class Player {
 public:
     Player(Side my_side);
     ~Player();
-    vector<Move*> get_possible_moves(Board *board, Side s); 
+    vector<Move*> get_possible_moves(Board *board, Side s);
+    float minimax(Board *board, Move *node, int depth, bool maximizing_player); 
     Move *doMove(Move *opponentsMove, int msLeft);
     Move* opp_move(Board *copy); 
-    float minimax(Board *board, Move *node, int depth, bool maximizing_player);
     int bestMove(std::vector<Move*> possible_moves);
     int get_score(Move* move);
 

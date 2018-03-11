@@ -168,7 +168,6 @@ float Player::minimax(Board *board, Move *node, int depth, bool maximizing_playe
     Board *copy = board->copy();
 
     Side oppo_side;
-
     if(side == BLACK)
     {
         oppo_side = WHITE;
@@ -177,16 +176,6 @@ float Player::minimax(Board *board, Move *node, int depth, bool maximizing_playe
     {
         oppo_side = BLACK;
     }
-    /*
-    if (maximizing_player)
-    {
-        copy->doMove(node, oppo_side);
-    }
-    else
-    {
-        copy->doMove(node, side);
-    }
-    */ 
 
     if (maximizing_player)
     {
