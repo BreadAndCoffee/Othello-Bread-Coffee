@@ -1,6 +1,6 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
-#define DEPTH 3
+#define DEPTH 0
 #define INFINITY 100000000
 
 
@@ -19,7 +19,7 @@ public:
     Move *doMove(Move *opponentsMove, int msLeft);
     Move* opp_move(Board *copy); 
     int bestMove(std::vector<Move*> possible_moves);
-    int get_score(Board* copy, Move* move, Side s);
+    int get_score(Board* copy, Move* move, Side s, int original);
 
     // Flag to tell if the player is running within the test_minimax context
     bool testingMinimax;
