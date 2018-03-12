@@ -76,7 +76,7 @@ vector<Move*> Player::get_possible_moves(Board *curr_board, Side s)
  * @return the score of that move
  * 
  */
-int Player::get_score(Board *copy, Move* move, Side s){
+int Player::get_score(Board *copy, Move* move, Side s, int original){
     // Outline:
     // make copy of the board 
     // get the original score
@@ -88,6 +88,7 @@ int Player::get_score(Board *copy, Move* move, Side s){
     int x = move->getX(); 
     int y = move->getY(); 
     //copy->doMove(move, s); 
+
     int new_score = copy->count(s); 
     //delete copy; 
 
@@ -194,7 +195,7 @@ float Player::minimax(Board *curr_board, Move *node, int depth, bool maximizing_
         vector<Move*> children = get_possible_moves(copy, side);
         if (depth <= 0 || (children.empty() && (get_possible_moves(copy, oppo_side)).empty()))
         {
-            return get_score(copy, node, side);
+            return get_score(copy, node, side, original);
         }
         else if (children.empty())
         {
@@ -221,7 +222,7 @@ float Player::minimax(Board *curr_board, Move *node, int depth, bool maximizing_
         vector<Move*> children = get_possible_moves(copy, oppo_side);
         if (depth <= 0 || children.empty() && (get_possible_moves(copy, oppo_side)).empty())
         {
-            return get_score(copy, node, oppo_side);
+            return get_score(copy, node, oppo_side, original);
         }
         else if (children.empty())
         {
