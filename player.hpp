@@ -15,7 +15,7 @@ public:
     Player(Side my_side);
     ~Player();
     vector<Move*> get_possible_moves(Board *board, Side s);
-    float minimax(Board *board, Move *node, int depth, bool maximizing_player); 
+    float minimax(Board *board, Move *node, int depth, bool maximizing_player, int orig); 
     Move *doMove(Move *opponentsMove, int msLeft);
     Move* opp_move(Board *copy); 
     int bestMove(std::vector<Move*> possible_moves);
@@ -25,6 +25,7 @@ public:
     bool testingMinimax;
     Board * board;
     Side side;
+    int array[8][8];
 };
 
 #endif
