@@ -76,51 +76,19 @@ vector<Move*> Player::get_possible_moves(Board *curr_board, Side s)
  * @return the score of that move
  * 
  */
-int Player::get_score(Board *copy, Move* move, Side s, int original){
-    // Outline:
-    // make copy of the board 
-    // get the original score
-    // make a move on that copy
-    // get the new score 
-    // delete the copy of the board 
-
-    //int old_score = copy->count(s);
-    int x = move->getX(); 
-    int y = move->getY(); 
-    //copy->doMove(move, s); 
-
-    int new_score = copy->count(s); 
-    //delete copy; 
-
-    // Check corners 
-    if((x == 0 || x == 7) && ((y == 0) || y == 7))
+int Player::get_score(Board *copy, Side s){
+    int val = 0; 
+    for(int i = 0; i < 8; i++)
     {
-        new_score += CORNERS; 
+        for(int j = 0; j < 8; j++)
+        {
+            if(get(s, i, j))
+            {
+                val += arr[i][j];
+            }
+        }
     }
-
-    // Check adjacent 
-    else if((x == 1 || x == 6) && (y == 6 || y ==1))
-    {
-        new_score -= CORNERS; 
-    }
-
-    // Check neighbors
-    else if((x == 0 && y == 1) || (x == 0 && y == 6) 
-        || (x == 1 && y == 0) || (x == 1 && y == 7)
-        || (x == 6 && y == 0) || (x == 6 && y == 7)
-        || (x == 7 && y == 1) || (x == 7 && y == 6))
-    {
-        new_score -= CORNERS; 
-    }
-
-    // Check the edges (excluding near corner)
-    else if (x == 0 || x == 7 || y == 0 || y == 7)
-    {
-        new_score += EDGES; 
-    } 
-
-    //return (new_score - old_score);
-    return new_score;
+    return val; 
 }
 
 /*
@@ -175,7 +143,7 @@ int Player::bestMove(vector<Move*> possible_moves){
     return high_index;
 }
 
-float Player::minimax(Board *curr_board, Move *node, int depth, bool maximizing_player, int orig)
+float Player::minimax(Board *curr_board, Move *node, int depth, bool maximizing_player)
 {
     float bestValue;
     Board *copy = curr_board->copy();
@@ -195,11 +163,11 @@ float Player::minimax(Board *curr_board, Move *node, int depth, bool maximizing_
         vector<Move*> children = get_possible_moves(copy, side);
         if (depth <= 0 || (children.empty() && (get_possible_moves(copy, oppo_side)).empty()))
         {
-            return get_score(copy, node, side, original);
+            return get_score(copy, side);
         }
         else if (children.empty())
         {
-            return minimax(copy, node, depth-1, false, orig);
+            return minimax(copy, node, depth-1, false);
         }
         bestValue = -INFINITY;
         for (unsigned int i = 0; i < children.size(); i++)
@@ -207,7 +175,7 @@ float Player::minimax(Board *curr_board, Move *node, int depth, bool maximizing_
             Board *copy_c = copy->copy();
             orig = copy_c->count(side);
             copy_c->doMove(children[i], side);
-            float recur_result = minimax(copy_c, children[i], depth-1, false, orig);
+            float recur_result = minimax(copy_c, children[i], depth-1, false);
             // return maximum
             if (recur_result > bestValue)
             {
@@ -222,11 +190,11 @@ float Player::minimax(Board *curr_board, Move *node, int depth, bool maximizing_
         vector<Move*> children = get_possible_moves(copy, oppo_side);
         if (depth <= 0 || children.empty() && (get_possible_moves(copy, oppo_side)).empty())
         {
-            return get_score(copy, node, oppo_side, original);
+            return get_score(copy, oppo_side);
         }
         else if (children.empty())
         {
-            return minimax(copy, node, depth-1, true, orig);
+            return minimax(copy, node, depth-1, true);
         }
         bestValue = INFINITY;
         for (unsigned int i = 0; i < children.size(); i++)
@@ -234,7 +202,7 @@ float Player::minimax(Board *curr_board, Move *node, int depth, bool maximizing_
             Board *copy_c = copy->copy();
             orig = copy_c->count(oppo_side);
             copy_c->doMove(children[i], oppo_side);
-            float recur_result = minimax(copy_c, children[i], depth-1, true, orig);
+            float recur_result = minimax(copy_c, children[i], depth-1, true);
             // return minimum
             //bestValue = !(recur_result < bestValue) ?bestValue:recur_result;
             if (recur_result < bestValue)
