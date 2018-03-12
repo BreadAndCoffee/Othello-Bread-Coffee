@@ -19,7 +19,7 @@ public:
     Move *doMove(Move *opponentsMove, int msLeft);
     Move* opp_move(Board *copy); 
     int bestMove(std::vector<Move*> possible_moves);
-    int get_score(Move* move);
+    int get_score(Board* copy, Move* move, Side s);
 
     // Flag to tell if the player is running within the test_minimax context
     bool testingMinimax;
