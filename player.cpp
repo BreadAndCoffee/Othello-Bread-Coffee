@@ -2,8 +2,8 @@
 #include <vector>
 
 
-#define CORNERS 10
-#define EDGES 5
+#define CORNERS 50
+#define EDGES 10
 
 using namespace std;
 
@@ -22,6 +22,7 @@ Player::Player(Side my_side) {
     // Record the size and initialize the player's 
     // record of the board
     side = my_side; 
+    
 }
 
 /*
@@ -31,24 +32,21 @@ Player::~Player() {
     delete board;
 }
 
-vector<Move*> Player::get_possible_moves(Board *board, Side s)
+vector<Move*> Player::get_possible_moves(Board *curr_board, Side s)
 {
     // true if game is finished, automatically exits
     // not sure if this is necessary 
-    if(board->isDone())
-    {
-        exit(0);
-    }
 
     // initialize a vector to store all possible moves 
     vector<Move*> possible_moves;  
 
     // if there are no valid moves, return nullptr
+    /*
     if(!board->hasMoves(s))
     {
         possible_moves.push_back(nullptr); 
         return possible_moves; 
-    } 
+    } */
 
     // iterate through positions to check if the move is valid
     for(int i = 0; i < 8; i++)
@@ -57,7 +55,7 @@ vector<Move*> Player::get_possible_moves(Board *board, Side s)
         {
             Move *move = new Move(i, j); 
             // if the move is valid, add it to possible_moves
-            if(board->checkMove(move, s))
+            if(curr_board->checkMove(move, s))
             {
                 possible_moves.push_back(move); 
             }
@@ -85,14 +83,14 @@ int Player::get_score(Board *copy, Move* move, Side s, int original){
     // make a move on that copy
     // get the new score 
     // delete the copy of the board 
-    // return the score
 
-    int old_score = original;
+    //int old_score = copy->count(s);
     int x = move->getX(); 
     int y = move->getY(); 
-    // Copy->doMove(move, s); 
+    //copy->doMove(move, s); 
+
     int new_score = copy->count(s); 
-    delete copy; 
+    //delete copy; 
 
     // Check corners 
     if((x == 0 || x == 7) && ((y == 0) || y == 7))
@@ -112,7 +110,7 @@ int Player::get_score(Board *copy, Move* move, Side s, int original){
         || (x == 6 && y == 0) || (x == 6 && y == 7)
         || (x == 7 && y == 1) || (x == 7 && y == 6))
     {
-        new_score -= EDGES; 
+        new_score -= CORNERS; 
     }
 
     // Check the edges (excluding near corner)
@@ -121,7 +119,8 @@ int Player::get_score(Board *copy, Move* move, Side s, int original){
         new_score += EDGES; 
     } 
 
-    return (new_score - old_score);
+    //return (new_score - old_score);
+    return new_score;
 }
 
 /*
@@ -137,24 +136,33 @@ int Player::bestMove(vector<Move*> possible_moves){
     //Calls get_score for every move in possible_moves
     //Finds the highest
     //Return the index of the highest value 
-
     // index of move with highest value; initialize to 0
-    if (possible_moves.size() < 0)
+    /*
+    if (possible_moves.size() == 0)
     {
         return -1;
-    }
+    }*/
     int high_index = 0; 
     // highest score of all moves in vector
     // initialized to score of possible_moves[0]
     /*
     int high_score = get_score(possible_moves[0]);
     */
-    int high_score = (int)(minimax(board, possible_moves[0], DEPTH, true));
+    //Board *copy = board->copy();
+    //copy->doMove(possible_moves[0], side);
 
+    cerr << "hi size: "<< possible_moves.size() << endl;
+    int high_score = (int)(minimax(board, possible_moves[0], DEPTH, true, board->count(side)));
+
+    cerr << "after" << endl;
     // iterate over rest of vector
     for (unsigned int i = 1; i < possible_moves.size(); i++)
     {
-        int my_score = (int)(minimax(board, possible_moves[i], DEPTH, true));
+        //copy = board->copy();
+        //copy->doMove(possible_moves[i], side);
+        cerr << "in loop before" << endl;
+        int my_score = (int)(minimax(board, possible_moves[i], DEPTH, true, board->count(side)));
+        cerr << "in loop after" << endl;
         // if move has higher score than current highest score
         if(my_score > high_score)
         {
@@ -167,10 +175,10 @@ int Player::bestMove(vector<Move*> possible_moves){
     return high_index;
 }
 
-float Player::minimax(Board *board, Move *node, int depth, bool maximizing_player)
+float Player::minimax(Board *curr_board, Move *node, int depth, bool maximizing_player, int orig)
 {
     float bestValue;
-    Board *copy = board->copy();
+    Board *copy = curr_board->copy();
 
     Side oppo_side;
     if(side == BLACK)
@@ -184,19 +192,22 @@ float Player::minimax(Board *board, Move *node, int depth, bool maximizing_playe
 
     if (maximizing_player)
     {
-        int original = copy->count(oppo_side); 
-        copy->doMove(node, side); 
-        vector<Move*> children = get_possible_moves(board, oppo_side);
-        if (depth == 0 || children[0] == nullptr)
+        vector<Move*> children = get_possible_moves(copy, side);
+        if (depth <= 0 || (children.empty() && (get_possible_moves(copy, oppo_side)).empty()))
         {
             return get_score(copy, node, side, original);
+        }
+        else if (children.empty())
+        {
+            return minimax(copy, node, depth-1, false, orig);
         }
         bestValue = -INFINITY;
         for (unsigned int i = 0; i < children.size(); i++)
         {
-            // Board *copy_c = copy->copy();
-            // copy_c->doMove(children[i], oppo_side);
-            float recur_result = minimax(copy, children[i], depth-1, false);
+            Board *copy_c = copy->copy();
+            orig = copy_c->count(side);
+            copy_c->doMove(children[i], side);
+            float recur_result = minimax(copy_c, children[i], depth-1, false, orig);
             // return maximum
             if (recur_result > bestValue)
             {
@@ -208,19 +219,22 @@ float Player::minimax(Board *board, Move *node, int depth, bool maximizing_playe
     }
     else
     {
-        int original = copy->count(oppo_side); 
-        copy->doMove(node, side); 
-        vector<Move*> children = get_possible_moves(board, side);
-        if (depth == 0 || children[0] == nullptr)
+        vector<Move*> children = get_possible_moves(copy, oppo_side);
+        if (depth <= 0 || children.empty() && (get_possible_moves(copy, oppo_side)).empty())
         {
             return get_score(copy, node, oppo_side, original);
+        }
+        else if (children.empty())
+        {
+            return minimax(copy, node, depth-1, true, orig);
         }
         bestValue = INFINITY;
         for (unsigned int i = 0; i < children.size(); i++)
         {
-            // Board *copy_c = copy->copy();
-            // copy_c->doMove(children[i], side);
-            float recur_result = minimax(copy, children[i], depth-1, true);
+            Board *copy_c = copy->copy();
+            orig = copy_c->count(oppo_side);
+            copy_c->doMove(children[i], oppo_side);
+            float recur_result = minimax(copy_c, children[i], depth-1, true, orig);
             // return minimum
             //bestValue = !(recur_result < bestValue) ?bestValue:recur_result;
             if (recur_result < bestValue)
@@ -251,7 +265,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     // not sure if this is necessary 
     if(board->isDone())
     {
-        exit(0);
+        return nullptr;
     }
     
     Side oppo_side;
@@ -269,12 +283,17 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     board->doMove(opponentsMove, oppo_side);
 
     vector<Move*> possible_moves = get_possible_moves(board, side); 
+    if (possible_moves.size() == 0)
+    {
+        return nullptr;
+    }
 
     int index = bestMove(possible_moves);
+    /*
     if(index == -1)
     {
         exit(0);
-    }
+    }*/
 
     Move *final_move = new Move(possible_moves[index]->getX(), 
         possible_moves[index]->getY());
