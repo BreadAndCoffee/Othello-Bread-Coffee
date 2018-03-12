@@ -78,7 +78,7 @@ vector<Move*> Player::get_possible_moves(Board *board, Side s)
  * @return the score of that move
  * 
  */
-int Player::get_score(Move* move){
+int Player::get_score(Board *copy, Move* move, Side s){
     // Outline:
     // make copy of the board 
     // get the original score
@@ -86,13 +86,16 @@ int Player::get_score(Move* move){
     // get the new score 
     // delete the copy of the board 
     // return the score  
-
+    /*
     Board *copy = board->copy(); 
     int old_score = copy->count(side);
+    */
     int x = move->getX(); 
     int y = move->getY(); 
+    /*
     copy->doMove(move, side); 
-    int new_score = copy->count(side); 
+    */
+    int new_score = copy->count(s); 
     // int mobility = (int)(get_mobility(copy) / 4);
     delete copy; 
 
@@ -122,7 +125,10 @@ int Player::get_score(Move* move){
     {
         new_score += EDGES; 
     } 
-    return (new_score - old_score); 
+    /*
+    return (new_score - old_score);
+    */
+    return new_score; 
 }
 
 /*
@@ -140,10 +146,17 @@ int Player::bestMove(vector<Move*> possible_moves){
     //Return the index of the highest value 
 
     // index of move with highest value; initialize to 0
+    if (possible_moves.size() < 0)
+    {
+        return -1;
+    }
     int high_index = 0; 
     // highest score of all moves in vector
     // initialized to score of possible_moves[0]
-    int high_score = minimax(board, possible_moves[0], DEPTH, true);
+    /*
+    int high_score = get_score(possible_moves[0]);
+    */
+    int high_score = (int)(minimax(board, possible_moves[0], DEPTH, true));
     // iterate over rest of vector
     for (unsigned int i = 1; i < possible_moves.size(); i++)
     {
@@ -164,6 +177,7 @@ float Player::minimax(Board *board, Move *node, int depth, bool maximizing_playe
 {
     float bestValue;
     Board *copy = board->copy();
+
     Side oppo_side;
     if(side == BLACK)
     {
@@ -176,33 +190,47 @@ float Player::minimax(Board *board, Move *node, int depth, bool maximizing_playe
 
     if (maximizing_player)
     {
+        //copy->doMove(node, side);
         vector<Move*> children = get_possible_moves(copy, oppo_side);
         if (depth == 0 || children[0] == nullptr)
         {
-            return get_score(node);
+            return get_score(copy, node, side);
         }
         bestValue = -INFINITY;
         for (unsigned int i = 0; i < children.size(); i++)
         {
+            Board *copy_c = copy->copy();
+            copy_c->doMove(children[i], oppo_side);
             float recur_result = minimax(copy, children[i], depth-1, false);
             // return maximum
-            bestValue = (bestValue < recur_result) ?recur_result:bestValue;
+            if (recur_result > bestValue)
+            {
+                bestValue = recur_result;
+            }
+            //bestValue = (bestValue < recur_result) ?recur_result:bestValue;
         }
         return bestValue;
     }
     else
     {
+        //copy->doMove(node, oppo_side);
         vector<Move*> children = get_possible_moves(copy, side);
         if (depth == 0 || children[0] == nullptr)
         {
-            return get_score(node);
+            return get_score(copy, node, oppo_side);
         }
         bestValue = INFINITY;
         for (unsigned int i = 0; i < children.size(); i++)
         {
+            Board *copy_c = copy->copy();
+            copy_c->doMove(children[i], side);
             float recur_result = minimax(copy, children[i], depth-1, true);
             // return minimum
-            bestValue = !(recur_result < bestValue) ?bestValue:recur_result;
+            //bestValue = !(recur_result < bestValue) ?bestValue:recur_result;
+            if (recur_result < bestValue)
+            {
+                bestValue = recur_result;
+            }
         }
         return bestValue;
     }
@@ -246,8 +274,14 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 
     vector<Move*> possible_moves = get_possible_moves(board, side); 
 
-    Move *final_move = new Move(possible_moves[bestMove(possible_moves)]->getX(), 
-        possible_moves[bestMove(possible_moves)]->getY());
+    int index = bestMove(possible_moves);
+    if(index == -1)
+    {
+        exit(0);
+    }
+
+    Move *final_move = new Move(possible_moves[index]->getX(), 
+        possible_moves[index]->getY());
 
     board->doMove(final_move, side);
 

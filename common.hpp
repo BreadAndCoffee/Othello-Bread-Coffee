@@ -10,7 +10,6 @@ class Move {
    
 public:
     int x, y;
-    std::vector<Move*> children;
 
     Move(int x, int y) {
         this->x = x;
