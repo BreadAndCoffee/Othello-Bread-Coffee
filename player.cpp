@@ -2,8 +2,8 @@
 #include <vector>
 
 
-#define CORNERS 50
-#define EDGES 10
+#define CORNERS 10
+#define EDGES 2
 
 using namespace std;
 
