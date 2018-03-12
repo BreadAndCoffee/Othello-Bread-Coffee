@@ -13,7 +13,6 @@ using namespace std;
  * within 30 seconds.
  */
 
-
 Player::Player(Side my_side) {
     // Will be set to true in test_minimax.cpp.
     testingMinimax = false;
@@ -31,7 +30,6 @@ Player::Player(Side my_side) {
 Player::~Player() {
     delete board;
 }
-
 
 vector<Move*> Player::get_possible_moves(Board *board, Side s)
 {
@@ -145,7 +143,7 @@ int Player::bestMove(vector<Move*> possible_moves){
     int high_index = 0; 
     // highest score of all moves in vector
     // initialized to score of possible_moves[0]
-    int high_score = get_score(possible_moves[0]);
+    int high_score = minimax(board, possible_moves[0], DEPTH, true);
     // iterate over rest of vector
     for (unsigned int i = 1; i < possible_moves.size(); i++)
     {
