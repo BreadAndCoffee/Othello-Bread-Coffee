@@ -117,9 +117,9 @@ int Player::get_score(Board *copy, Side s){
     {
         for(int j = 0; j < 8; j++)
         {
-            if(get(s, i, j))
+            if(copy->get(s, i, j))
             {
-                val += arr[i][j];
+                val += array[i][j];
             }
         }
     }
@@ -155,7 +155,7 @@ int Player::bestMove(vector<Move*> possible_moves){
     //copy->doMove(possible_moves[0], side);
 
     cerr << "hi size: "<< possible_moves.size() << endl;
-    int high_score = (int)(minimax(board, possible_moves[0], DEPTH, true);
+    int high_score = (int)(minimax(board, possible_moves[0], DEPTH, true));
 
     cerr << "after" << endl;
     // iterate over rest of vector
@@ -164,7 +164,7 @@ int Player::bestMove(vector<Move*> possible_moves){
         //copy = board->copy();
         //copy->doMove(possible_moves[i], side);
         cerr << "in loop before" << endl;
-        int my_score = (int)(minimax(board, possible_moves[i], DEPTH, true);
+        int my_score = (int)(minimax(board, possible_moves[i], DEPTH, true));
         cerr << "in loop after" << endl;
         // if move has higher score than current highest score
         if(my_score > high_score)
@@ -208,7 +208,7 @@ float Player::minimax(Board *curr_board, Move *node, int depth, bool maximizing_
         for (unsigned int i = 0; i < children.size(); i++)
         {
             Board *copy_c = copy->copy();
-            orig = copy_c->count(side);
+            //orig = copy_c->count(side);
             copy_c->doMove(children[i], side);
             float recur_result = minimax(copy_c, children[i], depth-1, false);
             // return maximum
@@ -235,7 +235,7 @@ float Player::minimax(Board *curr_board, Move *node, int depth, bool maximizing_
         for (unsigned int i = 0; i < children.size(); i++)
         {
             Board *copy_c = copy->copy();
-            orig = copy_c->count(oppo_side);
+            //orig = copy_c->count(oppo_side);
             copy_c->doMove(children[i], oppo_side);
             float recur_result = minimax(copy_c, children[i], depth-1, true);
             // return minimum
