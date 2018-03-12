@@ -135,37 +135,17 @@ int Player::get_score(Board *copy, Side s){
  * @return an integer corresponding to the index of the best move
  * 
  */
-int Player::bestMove(vector<Move*> possible_moves){
-    //Calls get_score for every move in possible_moves
-    //Finds the highest
-    //Return the index of the highest value 
-    // index of move with highest value; initialize to 0
-    /*
-    if (possible_moves.size() == 0)
-    {
-        return -1;
-    }*/
+int Player::bestMove(vector<Move*> possible_moves)
+{
     int high_index = 0; 
-    // highest score of all moves in vector
-    // initialized to score of possible_moves[0]
-    /*
-    int high_score = get_score(possible_moves[0]);
-    */
-    //Board *copy = board->copy();
-    //copy->doMove(possible_moves[0], side);
+    int high_score = (int)(minimax(board, possible_moves[0], DEPTH, true)); 
 
-    cerr << "hi size: "<< possible_moves.size() << endl;
-    int high_score = (int)(minimax(board, possible_moves[0], DEPTH, true));
-
-    cerr << "after" << endl;
     // iterate over rest of vector
     for (unsigned int i = 1; i < possible_moves.size(); i++)
     {
         //copy = board->copy();
-        //copy->doMove(possible_moves[i], side);
-        cerr << "in loop before" << endl;
+        //copy->doMove(possible_moves[i], side)
         int my_score = (int)(minimax(board, possible_moves[i], DEPTH, true));
-        cerr << "in loop after" << endl;
         // if move has higher score than current highest score
         if(my_score > high_score)
         {
@@ -177,6 +157,7 @@ int Player::bestMove(vector<Move*> possible_moves){
     }
     return high_index;
 }
+
 
 float Player::minimax(Board *curr_board, Move *node, int depth, bool maximizing_player)
 {
