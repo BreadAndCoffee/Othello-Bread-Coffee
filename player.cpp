@@ -2,8 +2,8 @@
 #include <vector>
 
 
-#define CORNERS 5
-#define EDGES 2
+#define CORNERS 10
+#define EDGES 5
 
 using namespace std;
 
@@ -186,13 +186,7 @@ float Player::minimax(Board *board, Move *node, int depth, bool maximizing_playe
 
     if (maximizing_player)
     {
-        //copy->doMove(node, side);
-        vector<Move*> children = get_possible_moves(copy, oppo_side);
-        /*
-        if(node == nullptr)
-        {
-            return 0.0;
-        }*/
+        vector<Move*> children = get_possible_moves(board, oppo_side);
         if (depth == 0 || children[0] == nullptr)
         {
             return get_score(copy, node, side);
@@ -214,13 +208,7 @@ float Player::minimax(Board *board, Move *node, int depth, bool maximizing_playe
     }
     else
     {
-        //copy->doMove(node, oppo_side);
-        vector<Move*> children = get_possible_moves(copy, side);
-        /*
-        if(node == nullptr)
-        {
-            return 0.0;
-        }*/
+        vector<Move*> children = get_possible_moves(board, side);
         if (depth == 0 || children[0] == nullptr)
         {
             return get_score(copy, node, oppo_side);
