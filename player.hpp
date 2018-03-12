@@ -1,6 +1,6 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
-#define DEPTH 0
+#define DEPTH 2
 #define INFINITY 100000000
 
 
