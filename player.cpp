@@ -1,7 +1,6 @@
 #include "player.hpp"
 #include <vector>
 
-
 #define CORNERS 200
 #define EDGES 100
 #define PIECES 5
@@ -23,15 +22,14 @@ Player::Player(Side my_side) {
     // Record the size and initialize the player's 
     // record of the board
     side = my_side; 
-    for(int x = 0; x < 8; x++)
+    for (int x = 0; x < 8; x++)
     {
         for (int y = 0; y < 8; y++)
         {
-            if((x == 0 || x == 7) && ((y == 0) || y == 7))
+            if ((x == 0 || x == 7) && (y == 0 || y == 7))
             {
-                array[x][y] = CORNERS; 
+                array[x][y] = CORNERS;
             }
-
             // Check adjacent 
             else if((x == 1 || x == 6) && (y == 6 || y ==1))
             {
@@ -58,7 +56,6 @@ Player::Player(Side my_side) {
             }
         }
     }
-    
 }
 
 /*
