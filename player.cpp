@@ -2,8 +2,8 @@
 #include <vector>
 
 
-#define CORNERS 10
-#define EDGES 5
+#define CORNERS 5
+#define EDGES 2
 
 using namespace std;
 
@@ -85,18 +85,13 @@ int Player::get_score(Board *copy, Move* move, Side s){
     // make a move on that copy
     // get the new score 
     // delete the copy of the board 
-    // return the score  
-    /*
-    Board *copy = board->copy(); 
-    int old_score = copy->count(side);
-    */
+    // return the score
+
+    int old_score = copy->count(s);
     int x = move->getX(); 
     int y = move->getY(); 
-    /*
-    copy->doMove(move, side); 
-    */
+    copy->doMove(move, s); 
     int new_score = copy->count(s); 
-    // int mobility = (int)(get_mobility(copy) / 4);
     delete copy; 
 
     // Check corners 
@@ -125,10 +120,8 @@ int Player::get_score(Board *copy, Move* move, Side s){
     {
         new_score += EDGES; 
     } 
-    /*
+
     return (new_score - old_score);
-    */
-    return new_score; 
 }
 
 /*
@@ -157,6 +150,7 @@ int Player::bestMove(vector<Move*> possible_moves){
     int high_score = get_score(possible_moves[0]);
     */
     int high_score = (int)(minimax(board, possible_moves[0], DEPTH, true));
+
     // iterate over rest of vector
     for (unsigned int i = 1; i < possible_moves.size(); i++)
     {
@@ -199,8 +193,8 @@ float Player::minimax(Board *board, Move *node, int depth, bool maximizing_playe
         bestValue = -INFINITY;
         for (unsigned int i = 0; i < children.size(); i++)
         {
-            Board *copy_c = copy->copy();
-            copy_c->doMove(children[i], oppo_side);
+            // Board *copy_c = copy->copy();
+            // copy_c->doMove(children[i], oppo_side);
             float recur_result = minimax(copy, children[i], depth-1, false);
             // return maximum
             if (recur_result > bestValue)
@@ -222,8 +216,8 @@ float Player::minimax(Board *board, Move *node, int depth, bool maximizing_playe
         bestValue = INFINITY;
         for (unsigned int i = 0; i < children.size(); i++)
         {
-            Board *copy_c = copy->copy();
-            copy_c->doMove(children[i], side);
+            // Board *copy_c = copy->copy();
+            // copy_c->doMove(children[i], side);
             float recur_result = minimax(copy, children[i], depth-1, true);
             // return minimum
             //bestValue = !(recur_result < bestValue) ?bestValue:recur_result;
