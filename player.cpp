@@ -155,7 +155,7 @@ int Player::bestMove(vector<Move*> possible_moves){
     //copy->doMove(possible_moves[0], side);
 
     cerr << "hi size: "<< possible_moves.size() << endl;
-    int high_score = (int)(minimax(board, possible_moves[0], DEPTH, true, board->count(side)));
+    int high_score = (int)(minimax(board, possible_moves[0], DEPTH, true);
 
     cerr << "after" << endl;
     // iterate over rest of vector
@@ -164,7 +164,7 @@ int Player::bestMove(vector<Move*> possible_moves){
         //copy = board->copy();
         //copy->doMove(possible_moves[i], side);
         cerr << "in loop before" << endl;
-        int my_score = (int)(minimax(board, possible_moves[i], DEPTH, true, board->count(side)));
+        int my_score = (int)(minimax(board, possible_moves[i], DEPTH, true);
         cerr << "in loop after" << endl;
         // if move has higher score than current highest score
         if(my_score > high_score)
