@@ -22,6 +22,41 @@ Player::Player(Side my_side) {
     // Record the size and initialize the player's 
     // record of the board
     side = my_side; 
+    for(int x = 0; x < 8; x++)
+    {
+        for (int y = 0; y < 8; y++)
+        {
+            if((x == 0 || x == 7) && ((y == 0) || y == 7))
+            {
+                array[x][y] = CORNERS; 
+            }
+
+            // Check adjacent 
+            else if((x == 1 || x == 6) && (y == 6 || y ==1))
+            {
+                array[x][y] = -CORNERS; 
+            }
+
+            // Check neighbors
+            else if((x == 0 && y == 1) || (x == 0 && y == 6) 
+                || (x == 1 && y == 0) || (x == 1 && y == 7)
+                || (x == 6 && y == 0) || (x == 6 && y == 7)
+                || (x == 7 && y == 1) || (x == 7 && y == 6))
+            {
+                array[x][y] = -EDGES; 
+            }
+
+            // Check the edges (excluding near corner)
+            else if (x == 0 || x == 7 || y == 0 || y == 7)
+            {
+                array[x][y] = EDGES; 
+            } 
+            else
+            {
+                array[x][y] = 1;
+            }
+        }
+    }
     
 }
 
