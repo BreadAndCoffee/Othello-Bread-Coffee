@@ -136,9 +136,8 @@ int Player::bestMove(vector<Move*> possible_moves){
     //Calls get_score for every move in possible_moves
     //Finds the highest
     //Return the index of the highest value 
-
     // index of move with highest value; initialize to 0
-    if (possible_moves.size() < 0)
+    if (possible_moves.size() == 0)
     {
         return -1;
     }
@@ -148,11 +147,15 @@ int Player::bestMove(vector<Move*> possible_moves){
     /*
     int high_score = get_score(possible_moves[0]);
     */
+    //Board *copy = board->copy();
+    //copy->doMove(possible_moves[0], side);
     int high_score = (int)(minimax(board, possible_moves[0], DEPTH, true));
 
     // iterate over rest of vector
     for (unsigned int i = 1; i < possible_moves.size(); i++)
     {
+        //copy = board->copy();
+        //copy->doMove(possible_moves[i], side);
         int my_score = (int)(minimax(board, possible_moves[i], DEPTH, true));
         // if move has higher score than current highest score
         if(my_score > high_score)
@@ -185,9 +188,14 @@ float Player::minimax(Board *board, Move *node, int depth, bool maximizing_playe
     {
         //copy->doMove(node, side);
         vector<Move*> children = get_possible_moves(copy, oppo_side);
+        /*
+        if(node == nullptr)
+        {
+            return 0.0;
+        }*/
         if (depth == 0 || children[0] == nullptr)
         {
-            return get_score(copy, node, oppo_side);
+            return get_score(copy, node, side);
         }
         bestValue = -INFINITY;
         for (unsigned int i = 0; i < children.size(); i++)
@@ -208,9 +216,14 @@ float Player::minimax(Board *board, Move *node, int depth, bool maximizing_playe
     {
         //copy->doMove(node, oppo_side);
         vector<Move*> children = get_possible_moves(copy, side);
+        /*
+        if(node == nullptr)
+        {
+            return 0.0;
+        }*/
         if (depth == 0 || children[0] == nullptr)
         {
-            return get_score(copy, node, side);
+            return get_score(copy, node, oppo_side);
         }
         bestValue = INFINITY;
         for (unsigned int i = 0; i < children.size(); i++)
