@@ -19,9 +19,10 @@ Player::Player(Side my_side) {
 
     board = new Board();
 
-    // Record the size and initialize the player's 
+    // Record the side and initialize the player's 
     // record of the board
     side = my_side; 
+
     for (int x = 0; x < 8; x++)
     {
         for (int y = 0; y < 8; y++)
@@ -65,21 +66,19 @@ Player::~Player() {
     delete board;
 }
 
+/*
+ * @brief gets all possible moves for a a particular side 
+ * given the board and side
+ * 
+ * @param Board *curr_board the board in which to look for moves 
+ * @param Side s            the side making the move(s)
+ * 
+ * @return a vector<Move*> containing all the possible moves 
+ */
 vector<Move*> Player::get_possible_moves(Board *curr_board, Side s)
 {
-    // true if game is finished, automatically exits
-    // not sure if this is necessary 
-
     // initialize a vector to store all possible moves 
     vector<Move*> possible_moves;  
-
-    // if there are no valid moves, return nullptr
-    /*
-    if(!board->hasMoves(s))
-    {
-        possible_moves.push_back(nullptr); 
-        return possible_moves; 
-    } */
 
     // iterate through positions to check if the move is valid
     for(int i = 0; i < 8; i++)
@@ -161,7 +160,16 @@ int Player::bestMove(vector<Move*> possible_moves)
     return high_index;
 }
 
-
+/*
+ * @brief finds the best possible score by searching a decision tree of moves
+ *
+ * @param Board *curr_board        the current state of the board
+ * @param int depth                the depth to which to search in the tree
+ * @param bool maximizing_player   true if minimaxing for our team, else false
+ * 
+ * @return the float value of the best possible score
+ *
+ */
 float Player::minimax(Board *curr_board, int depth, bool maximizing_player)
 {
     float bestValue;
@@ -274,11 +282,6 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     }
 
     int index = bestMove(possible_moves);
-    /*
-    if(index == -1)
-    {
-        exit(0);
-    }*/
 
     Move *final_move = new Move(possible_moves[index]->getX(), 
         possible_moves[index]->getY());
