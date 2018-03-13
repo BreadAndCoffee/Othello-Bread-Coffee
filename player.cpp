@@ -167,6 +167,7 @@ float Player::minimax(Board *curr_board, int depth, bool maximizing_player)
     float bestValue;
     Board *copy = curr_board->copy();
 
+    // find opposite side 
     Side oppo_side;
     if(side == BLACK)
     {
@@ -179,11 +180,14 @@ float Player::minimax(Board *curr_board, int depth, bool maximizing_player)
 
     if (maximizing_player)
     {
+        // all possible moves our player can make
         vector<Move*> children = get_possible_moves(copy, side);
+        // base case, return heuristic score
         if (depth <= 0 || (children.empty() && (get_possible_moves(copy, oppo_side)).empty()))
         {
             return get_score(copy, side);
         }
+        // no possible moves for us, directly call recursive
         else if (children.empty())
         {
             return minimax(copy, depth-1, false);
@@ -191,6 +195,7 @@ float Player::minimax(Board *curr_board, int depth, bool maximizing_player)
         bestValue = -INFINITY;
         for (unsigned int i = 0; i < children.size(); i++)
         {
+            // make copy and do move
             Board *copy_c = copy->copy();
             copy_c->doMove(children[i], side);
             float recur_result = minimax(copy_c, depth-1, false);
@@ -199,12 +204,18 @@ float Player::minimax(Board *curr_board, int depth, bool maximizing_player)
             {
                 bestValue = recur_result;
             }
-            //bestValue = (bestValue < recur_result) ?recur_result:bestValue;
+            delete copy_c;
         }
+        for (unsigned int i = 0; i < children.size(); i++)
+        {
+            delete children[i];
+        }
+        delete copy;
         return bestValue;
     }
     else
     {
+        // all possible moves opponent can make
         vector<Move*> children = get_possible_moves(copy, oppo_side);
         if ((depth <= 0 || children.empty()) && (get_possible_moves(copy, side)).empty())
         {
@@ -221,14 +232,20 @@ float Player::minimax(Board *curr_board, int depth, bool maximizing_player)
             copy_c->doMove(children[i], oppo_side);
             float recur_result = minimax(copy_c, depth-1, true);
             // return minimum
-            //bestValue = !(recur_result < bestValue) ?bestValue:recur_result;
             if (recur_result < bestValue)
             {
                 bestValue = recur_result;
             }
+            delete copy_c;
         }
+        for (unsigned int i = 0; i < children.size(); i++)
+        {
+            delete children[i];
+        }
+        delete copy;
         return bestValue;
     }
+
 }
 
 /*
